@@ -1,5 +1,6 @@
 module Grafs.Cli where
 
+import Protolude
 import Options.Applicative
 
 data CLIOptions = CLIOptions

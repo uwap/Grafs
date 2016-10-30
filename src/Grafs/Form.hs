@@ -7,26 +7,36 @@ import Text.Digestive
 import Text.Digestive.Lucid.Html5
 import Lucid
 
-data FormType = InputText
+keynames :: [LText]
+keynames = toSL <$> keynames'
+  where keynames' = map pure ['a'..'z'] ++ map pure ['A'..'Z'] ++ (map (\x -> (x ++)) keynames' <*> keynames')
+
+data FormType = InputText | Radio [Text]
 
 data FormField = FormField
                { formType :: FormType
-               , formKey  :: Text
                , formDesc :: Text
                }
+viewField :: Monad m => Text -> View (HtmlT m ()) -> FormField -> HtmlT m ()
+viewField n v (FormField InputText desc) = do
+  label n v (toHtml desc) >> br_ []
+  inputText n v
+viewField n v (FormField (Radio options) desc) = do
+  toHtml desc >> br_ []
+  inputRadio True n v
 
-fromFormType _ = text Nothing
+fromFormType :: (Monad m, Monad m1) => FormType -> Form (HtmlT m1 ()) m Text
+fromFormType InputText = text Nothing
+fromFormType (Radio xs) = choice (zip xs (map toHtml xs)) Nothing
 
-mkForm :: (Monad m, Monad m1) => [FormField] -> Form (HtmlT m1 ()) m [Text]
+mkForm :: (Monad m, Monad m1) => [(Text, FormField)] -> Form (HtmlT m1 ()) m [Text]
 mkForm [] = pure []
-mkForm (FormField {..} : xs) = (:) <$> formKey .: fromFormType formType <*> mkForm xs
+mkForm ((formKey, FormField {..}) : xs) = (:) <$> formKey .: fromFormType formType <*> mkForm xs
 
 viewFormFields :: Monad m => [FormField] -> View (HtmlT m ())
-viewFormFields = runIdentity . getForm "" . mkForm
+viewFormFields = runIdentity . getForm "" . mkForm . zip (map toS keynames)
 
 renderForm :: Monad m => [FormField] -> HtmlT m ()
 renderForm ffs = renderForm' $ viewFormFields ffs
   where renderForm' :: Monad m => View (HtmlT m ()) -> HtmlT m ()
-        renderForm' v = forM_ ffs $ \(FormField {..}) -> p_ $ do
-          label formKey v (toHtml formDesc)
-          inputText formKey v
+        renderForm' v = forM_ (zip keynames ffs) $ \(n,f) -> p_ $ viewField (toS n) v f

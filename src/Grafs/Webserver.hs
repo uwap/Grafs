@@ -22,7 +22,10 @@ data Page = Page
 instance ToHtml Page where
   toHtml _ = doctypehtml_ $ do
     head_ $ title_ "testform"
-    body_ $ renderForm [ FormField InputText "nick" "Your Nick Name", FormField InputText "realname" "Your Realname" ]
+    body_ $ renderForm [ FormField InputText "Your Nick Name"
+                       , FormField InputText "Your Realname"
+                       , FormField (Radio [ "Banana", "Apple", "Grapefruit" ]) "Favourite Fruit"
+                       ]
 
 server :: Server App
 server = return Page

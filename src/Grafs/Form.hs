@@ -1,6 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TupleSections #-}
 module Grafs.Form where
 
 import Protolude
@@ -53,11 +54,13 @@ mkForm :: (Monad m, Monad m1) => [(Text, FormField)] -> Form (HtmlT m1 ()) m [Te
 mkForm [] = pure []
 mkForm ((formKey, FormField {..}) : xs) = (:) <$> formKey .: fromFormType formType <*> mkForm xs
 
-viewFormFields :: Monad m => [FormField] -> View (HtmlT m ())
-viewFormFields = runIdentity . getForm "" . mkForm . zip (map toS keynames)
+viewFormFields :: Monad m => Maybe [(Text,Text)] -> [FormField] -> (View (HtmlT m ()), Maybe [Text])
+viewFormFields Nothing = (, Nothing) . runIdentity . getForm "" . mkForm . zip (map toS keynames)
+viewFormFields (Just r) = runIdentity . flip (postForm "") env . mkForm . zip (map toS keynames)
+  where env = const . Identity $ \p -> Identity $ map (TextInput . snd) $ filter ((== fromPath p) . fst) r
 
-renderForm :: Monad m => [FormField] -> HtmlT m ()
-renderForm ffs = renderForm' $ viewFormFields ffs
+renderForm :: Monad m => Maybe [(Text,Text)] -> [FormField] -> (HtmlT m (), Maybe [Text])
+renderForm req ffs = let (v, r) = viewFormFields req ffs in (renderForm' v, r)
   where renderForm' :: Monad m => View (HtmlT m ()) -> HtmlT m ()
         renderForm' v = form v "forms2" $ do
           forM_ (zip keynames ffs) $ \(n,f) -> p_ $ viewField (toS n) v f

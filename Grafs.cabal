@@ -22,7 +22,8 @@ executable Grafs
   build-depends:       base >=4.9 && <4.10, optparse-applicative >= 0.12 && < 1.0,
                        servant-lucid >= 0.7 && < 1.0, servant-server >= 0.9 && < 1.0,
                        warp >= 3.2.8 && < 4.0, protolude >= 0.1.7 && < 0.2, lucid >= 2.9 && < 3.0,
-                       digestive-functors >= 0.8.0 && < 0.9.0, digestive-functors-lucid >= 0.0.0.4 && < 0.0.1
+                       digestive-functors >= 0.8.0 && < 0.9.0, digestive-functors-lucid >= 0.0.0.4 && < 0.0.1,
+                       http-types, aeson
   default-extensions:  NoImplicitPrelude
   hs-source-dirs:      src
   default-language:    Haskell2010

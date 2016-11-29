@@ -1,0 +1,16 @@
+* {
+  font-size: 1.1em;
+  font-style: serif;
+}
+
+body {
+  background: #668212;
+}
+
+form > .formelem {
+  background: #719327;
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid #223322;
+  border-radius: 10px;
+}

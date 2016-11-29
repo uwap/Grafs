@@ -4,6 +4,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ViewPatterns #-}
 module Grafs.Webserver where
 
 import Protolude
@@ -14,8 +15,9 @@ import Servant.HTML.Lucid
 import Text.Digestive
 import Text.Digestive.Lucid.Html5
 import Network.Wai.Handler.Warp
-import Network.HTTP.Types.URI
 import Grafs.Form
+import Grafs.Validation
+import qualified Data.Map as M
 
 type App = "forms" :> Get '[HTML] Page
       :<|> "static" :> Raw
@@ -34,18 +36,18 @@ instance ToHtml Page where
     where lower :: Monad m => Html a -> HtmlT m a
           lower (LUB.HtmlT (Identity x)) = LUB.HtmlT $ return x
 
-myForm :: Monad m => Maybe [(Text,Text)] -> (HtmlT m (), Maybe [Text])
-myForm x = renderForm x [ FormField InputText "Your Nick Name"
-                        , FormField InputText "Your Realname"
-                        , FormField (Radio [ "Banana", "Apple", "Grapefruit" ]) "Favourite Fruit"
-                        , FormField InputTextArea "Test"
+myForm :: Monad m => FormResponse -> (HtmlT m (), Maybe [Text])
+myForm x = renderForm x [ FormField InputText "Your Nick Name" [NotEmpty]
+                        , FormField InputText "Your Realname" []
+                        , FormField (Radio [ "Banana", "Apple", "Grapefruit" ]) "Favourite Fruit" []
+                        , FormField InputTextArea "Test" [NotEmpty]
                         ]
 
 server :: Server App
 server = formsRequest :<|> staticRequest :<|> forms2Request
-  where formsRequest = return . Page . fst $ myForm Nothing
+  where formsRequest = return . Page . fst $ myForm NoResponse
         staticRequest = serveDirectory "static"
-        forms2Request t = let (v, r) = myForm (Just t) in print r >> return (Page v)
+        forms2Request (M.fromList -> t) = let (v, r) = myForm (Response t) in print r >> return (Page v)
 
 
 runWebserver :: Int -> IO ()

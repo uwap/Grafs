@@ -1,6 +1,6 @@
 module Grafs.Cli where
 
-import Protolude
+import Protolude hiding ((<>))
 import Options.Applicative
 
 data CLIOptions = CLIOptions

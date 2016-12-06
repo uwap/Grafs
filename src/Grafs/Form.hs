@@ -68,7 +68,7 @@ fromFormType (CheckBox xs) = choice (zip xs (map toHtml xs)) Nothing
 mkForm :: (Monad m, Monad m1) => [(Text, FormField)] -> Form (HtmlT m1 ()) m [Text]
 mkForm [] = pure []
 mkForm ((formKey, FormField {..}) : xs) = (:) <$> formKey .: checkAll formValidations (fromFormType formType) <*> mkForm xs
-  where checkAll xs = foldr' (.) (\x -> x) (runValidation <$> xs) 
+  where checkAll xs = foldr' (.) (\x -> x) (runValidation <$> xs)
 
 viewFormFields :: Monad m => FormResponse -> [FormField] -> (View (HtmlT m ()), Maybe [Text])
 viewFormFields NoResponse = (, Nothing) . runIdentity . getForm "" . mkForm . zip (map toS keynames)
@@ -78,6 +78,8 @@ viewFormFields (Response m) = runIdentity . flip (postForm "") env . mkForm . zi
 renderForm :: Monad m => FormResponse -> [FormField] -> (HtmlT m (), Maybe [Text])
 renderForm req ffs = let (v, r) = viewFormFields req ffs in (renderForm' v, r)
   where renderForm' :: Monad m => View (HtmlT m ()) -> HtmlT m ()
-        renderForm' v = form v "forms2" $ do
-          forM_ (zip keynames ffs) $ \(n,f) -> with div_ [ class_ "formelem" ] $ viewField (toS n) v f
-          inputSubmit "Submit"
+        renderForm' v =
+          div_ [ class_ "g-form" ] $
+            form v "forms2" $ do
+              forM_ (zip keynames ffs) $ \(n,f) -> with div_ [ class_ "formelem" ] $ viewField (toS n) v f
+              inputSubmit "Submit"

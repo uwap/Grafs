@@ -1,16 +1,98 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Serif');
+
+.cf {
+  overflow: auto;
+  zoom: 1;
+}
+
 * {
-  font-size: 1.1em;
-  font-style: serif;
+  font-family: Georgia, serif;
 }
 
 body {
-  background: #668212;
 }
 
-form > .formelem {
-  background: #719327;
-  margin: 10px;
-  padding: 5px;
-  border: 1px solid #223322;
-  border-radius: 10px;
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+}
+
+#header {
+  padding: 10px 0;
+}
+
+#header h1 {
+  float: left;
+}
+
+#header .navbar, #header ul {
+  float: right;
+  text-align: right;
+}
+
+#header ul {
+  list-style-type: none;
+}
+
+#header li {
+  float: left;
+}
+
+#header li a {
+  text-decoration: none;
+  margin-left: 20px;
+  display: block;
+}
+
+#header li a:hover {
+  color: #333;
+}
+
+#header h1 a {
+  font-family: 'Droid Serif', Georgia, serif;
+  text-decoration: none;
+  color: #333333;
+}
+
+#header hr {
+  border-color: #eee;
+  border-size: 1px;
+  clear:both;
+}
+
+.constraint {
+  margin: 0 auto;
+  width: 1000px;
+}
+
+.g-form, .g-form input {
+  font-size: 1.5em;
+}
+
+.g-form input[type=text] {
+  width: 100%;
+}
+
+.g-form textarea {
+  font-size: 1.3em;
+  width: 100%;
+  min-height: 150px;
+}
+
+.g-form input, .g-form textarea {
+  border: 2px solid #ddd;
+}
+
+.g-form input:active, .g-form textarea:active, .g-form input:focus, .g-form textarea:focus {
+  border: 2px solid #779;
+}
+
+form .formelem {
+  border-bottom: 1px solid #ccc;
+  padding: 20px 0;
+}
+
+form input[type=submit] {
+  margin-top: 20px;
+  float: right;
 }

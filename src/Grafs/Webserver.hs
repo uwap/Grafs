@@ -27,18 +27,33 @@ type App = "forms" :> Get '[HTML] Page
 
 data Page = Page (Html ())
 
+-- TODO: Move this somewhere
+header :: Monad m => HtmlT m ()
+header =
+  div_ [ id_ "header" ] $ do
+    h1_ (a_ [ href_ "/" ] "Grafs")
+    ul_ [ class_ "navbar" ] $ do
+      li_ [] (a_ [ href_ "#" ] "New Form")
+      li_ [] (a_ [ href_ "#" ] "Analyze Data")
+      li_ [] (a_ [ href_ "#" ] "API")
+      li_ [] (a_ [ href_ "#" ] "Log Out")
+    hr_ []
+
 instance ToHtml Page where
   toHtml (Page x) = doctypehtml_ $ do
     head_ $ do
       title_ "testform"
       link_ [ rel_ "stylesheet", href_ "static/style.css" ]
-    body_ $ lower x
+    body_ $ do
+      div_ [ class_ "constraint" ] $ do
+        header
+        lower x
     where lower :: Monad m => Html a -> HtmlT m a
           lower (LUB.HtmlT (Identity x)) = LUB.HtmlT $ return x
 
 myForm :: Monad m => FormResponse -> (HtmlT m (), Maybe [Text])
-myForm x = renderForm x [ FormField InputText "Your Nick Name" [NotEmpty]
-                        , FormField InputText "Your Realname" []
+myForm x = renderForm x [ FormField InputText "Your Nickname" [NotEmpty]
+                        , FormField InputText "Your Real Name" []
                         , FormField (Radio [ "Banana", "Apple", "Grapefruit" ]) "Favourite Fruit" []
                         , FormField (CheckBox [ "¹", "²", "³", "⁴", "⁵", "⁶" ]) "CHeckbox" []
                         , FormField InputTextArea "Test" [NotEmpty]

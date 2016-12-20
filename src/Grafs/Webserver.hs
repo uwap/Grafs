@@ -31,7 +31,12 @@ data Page = Page (Html ())
 header :: Monad m => HtmlT m ()
 header =
   div_ [ id_ "header" ] $ do
-    h1_ "Grafs"
+    h1_ (a_ [ href_ "/" ] "Grafs")
+    ul_ [ class_ "navbar" ] $ do
+      li_ [] (a_ [ href_ "#" ] "New Form")
+      li_ [] (a_ [ href_ "#" ] "Analyze Data")
+      li_ [] (a_ [ href_ "#" ] "API")
+      li_ [] (a_ [ href_ "#" ] "Log Out")
     hr_ []
 
 instance ToHtml Page where

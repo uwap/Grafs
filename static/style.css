@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Droid+Serif');
 
+.cf {
+  overflow: auto;
+  zoom: 1;
+}
 
 * {
   font-family: Georgia, serif;
@@ -18,12 +22,42 @@ h1, h2, h3 {
 }
 
 #header h1 {
+  float: left;
+}
+
+#header .navbar, #header ul {
+  float: right;
+  text-align: right;
+}
+
+#header ul {
+  list-style-type: none;
+}
+
+#header li {
+  float: left;
+}
+
+#header li a {
+  text-decoration: none;
+  margin-left: 20px;
+  display: block;
+}
+
+#header li a:hover {
+  color: #333;
+}
+
+#header h1 a {
   font-family: 'Droid Serif', Georgia, serif;
+  text-decoration: none;
+  color: #333333;
 }
 
 #header hr {
   border-color: #eee;
   border-size: 1px;
+  clear:both;
 }
 
 .constraint {

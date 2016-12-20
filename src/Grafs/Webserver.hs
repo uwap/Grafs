@@ -40,6 +40,7 @@ myForm :: Monad m => FormResponse -> (HtmlT m (), Maybe [Text])
 myForm x = renderForm x [ FormField InputText "Your Nick Name" [NotEmpty]
                         , FormField InputText "Your Realname" []
                         , FormField (Radio [ "Banana", "Apple", "Grapefruit" ]) "Favourite Fruit" []
+                        , FormField (CheckBox [ "¹", "²", "³", "⁴", "⁵", "⁶" ]) "CHeckbox" []
                         , FormField InputTextArea "Test" [NotEmpty]
                         ]
 

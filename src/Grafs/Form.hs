@@ -63,7 +63,7 @@ fromFormType :: (Monad m, Monad m1) => FormType -> Form (HtmlT m1 ()) m Text
 fromFormType InputText = text Nothing
 fromFormType InputTextArea = text Nothing
 fromFormType (Radio xs) = choice (zip xs (map toHtml xs)) Nothing
-fromFormType (CheckBox xs) = choice (zip xs (map toHtml xs)) Nothing
+fromFormType (CheckBox xs) = ??? (zip xs (map toHtml xs)) Nothing
 
 mkForm :: (Monad m, Monad m1) => [(Text, FormField)] -> Form (HtmlT m1 ()) m [Text]
 mkForm [] = pure []
